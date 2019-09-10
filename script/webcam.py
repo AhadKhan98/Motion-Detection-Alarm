@@ -2,6 +2,10 @@ import cv2,time,pandas
 from datetime import datetime
 
 class Camera:
+    
+    def sound_alarm():
+        pass
+
     def start_capture(self,sensitivity):
         first_frame = None
         motion_list = [None,None] # Stores values for motion and no motion
