@@ -4,8 +4,8 @@ from plotting import Figure
 
 class Camera:
 
-    def sound_alarm():
-        pass
+    def sound_alarm(self):
+        print("Intruder!")
 
     def start_capture(self,sensitivity):
         first_frame = None
@@ -36,6 +36,7 @@ class Camera:
                     motion = 1
                     (x,y,w,h) = cv2.boundingRect(c) # stores dimensions for rectangle around moving object
                     cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),3) # draws the rectangle on the displayed video
+                    self.sound_alarm()
             motion_list += [motion]
             motion_list = motion_list[-2:] # Prevents list from getting too long if program runs for a while
 
