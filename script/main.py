@@ -15,10 +15,6 @@ def main():
     if sensitivity == 1: video.start_capture(20000)
     if sensitivity == 2: video.start_capture(15000)
     if sensitivity == 3: video.start_capture(10000)
-    window = Tk()
-    btn = Button(window,text="Intruder!")
-    btn.pack(fill=BOTH,expand=1)
-    window.mainloop()
 
 if __name__=="__main__":
     main()

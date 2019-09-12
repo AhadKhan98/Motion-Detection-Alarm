@@ -1,8 +1,9 @@
 import cv2,time,pandas
 from datetime import datetime
+from plotting import Figure
 
 class Camera:
-    
+
     def sound_alarm():
         pass
 
@@ -36,10 +37,12 @@ class Camera:
                     (x,y,w,h) = cv2.boundingRect(c) # stores dimensions for rectangle around moving object
                     cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),3) # draws the rectangle on the displayed video
             motion_list += [motion]
+            motion_list = motion_list[-2:] # Prevents list from getting too long if program runs for a while
+
             if motion_list[-1] == 1 and motion_list[-2] == 0: # Motion to No Motion
-                motion_times += [datetime.now().time().strftime('%H:%M:%S')]
+                motion_times += [datetime.now()]
             if motion_list[-1] == 0 and motion_list[-2] == 1: # No Motion to Motion
-                motion_times += [datetime.now().time().strftime('%H:%M:%S')]
+                motion_times += [datetime.now()]
             cv2.imshow('Motion Detection Alarm',frame)
 
             key_press = cv2.waitKey(1)
@@ -50,7 +53,9 @@ class Camera:
 
         for i in range(0,len(motion_times),2):
             df=df.append({"Start":motion_times[i],"End":motion_times[i+1]},ignore_index=True)
-        df.to_csv("Times.csv")
+
+        figure = Figure(df) # Creates a graph with the times object entered and exited the frame
+        figure.create_graph()
 
         video.release()
         cv2.destroyAllWindows()
