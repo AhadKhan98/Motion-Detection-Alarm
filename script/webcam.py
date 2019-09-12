@@ -1,13 +1,19 @@
 import cv2,time,pandas
+from tkinter import *
 from datetime import datetime
 from plotting import Figure
-
+from playsound import playsound
+from threading import Thread
 class Camera:
 
     def sound_alarm(self):
-        print("Intruder!")
+        while True:
+            playsound("alarm.wav",False)
+            time.sleep(3)
+
 
     def start_capture(self,sensitivity):
+        sound_alarm_thread = Thread(target=self.sound_alarm) # To execute function and continue capturing video
         first_frame = None
         motion_list = [None,None] # Stores values for motion and no motion
         motion_times = [] # Stores times where each object entered and exited the frame
@@ -36,14 +42,18 @@ class Camera:
                     motion = 1
                     (x,y,w,h) = cv2.boundingRect(c) # stores dimensions for rectangle around moving object
                     cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),3) # draws the rectangle on the displayed video
-                    self.sound_alarm()
             motion_list += [motion]
             motion_list = motion_list[-2:] # Prevents list from getting too long if program runs for a while
 
-            if motion_list[-1] == 1 and motion_list[-2] == 0: # Motion to No Motion
+            if motion_list[-1] == 1 and motion_list[-2] == 0: # No Motion to Motion
                 motion_times += [datetime.now()]
-            if motion_list[-1] == 0 and motion_list[-2] == 1: # No Motion to Motion
+                try:
+                    sound_alarm_thread.start()
+                except RuntimeError:
+                    pass
+            if motion_list[-1] == 0 and motion_list[-2] == 1: # Motion to No Motion
                 motion_times += [datetime.now()]
+
             cv2.imshow('Motion Detection Alarm',frame)
 
             key_press = cv2.waitKey(1)
