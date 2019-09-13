@@ -1,16 +1,16 @@
-import cv2,time,pandas
-from tkinter import *
+import cv2,time,pandas,ctypes
 from datetime import datetime
 from plotting import Figure
 from playsound import playsound
 from threading import Thread
+
 class Camera:
 
     def sound_alarm(self):
+        ctypes.windll.user32.MessageBoxW(0, "INTRUDER DETECTED! Video will continue to record motion.", "Intruder Alert", 0) # Displays a message box
         while True:
             playsound("alarm.wav",False)
-            time.sleep(3)
-
+            time.sleep(2)
 
     def start_capture(self,sensitivity):
         sound_alarm_thread = Thread(target=self.sound_alarm) # To execute function and continue capturing video
@@ -70,6 +70,3 @@ class Camera:
 
         video.release()
         cv2.destroyAllWindows()
-
-cam = Camera()
-cam.start_capture(10000)
